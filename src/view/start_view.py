@@ -4,6 +4,8 @@ from lib.ui.animation import SnakeAnimation
 from lib.ui.background import StartBackground
 from lib.ui.button import Button
 from lib.ui.title import Title
+import sys
+import os
 
 
 class StartView:
@@ -25,13 +27,26 @@ class StartView:
         self.snake_anim = SnakeAnimation(color_palette)
         self.buttons = self._create_buttons(width, height)
 
+    def get_resource_path(self, relative_path):
+        if getattr(sys, "frozen", False):
+            # 打包后环境
+            base_path = sys._MEIPASS  # type: ignore
+        else:
+            # 开发环境：根据当前文件位置定位到项目根目录下的resource
+            # 假设当前类文件在src/view/目录下，需要回退到src目录再找resource
+            base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(base_path, relative_path)
+
     def _set_icon(self):
         """设置窗口图标（视图负责UI相关配置）"""
         try:
-            icon = pygame.image.load("resource\\snake_icon.ico").convert_alpha()
+            # 使用get_resource_path获取正确路径，自动适配开发/打包环境
+            icon_path = self.get_resource_path("resource/snake_icon.ico")
+            # 加载图片时使用获取到的路径，而非硬编码路径
+            icon = pygame.image.load(icon_path).convert_alpha()
             pygame.display.set_icon(icon)
-        except:
-            print("警告：未找到图标文件，使用默认图标")
+        except Exception as e:
+            print(f"警告：未找到图标文件，使用默认图标。错误：{e}")
 
     def _create_buttons(self, init_width, init_height):
         """创建按钮（视图负责UI组件初始化）"""

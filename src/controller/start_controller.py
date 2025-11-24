@@ -40,7 +40,7 @@ class StartController:
 
     def _handle_button_action(self, action):
         """处理按钮点击业务逻辑"""
-        print(f"选择了: {action}")
+        # print(f"选择了: {action}")
         self.current_mode = action
 
         if action == "single":
