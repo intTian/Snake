@@ -1,2 +1,6 @@
 build/
 dist/
+Pipfile
+Pipfile.lock
+pngs/
+out/

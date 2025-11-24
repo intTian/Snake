@@ -30,22 +30,25 @@ class SingleGame:
 
     def move_snake(self):
         """根据速度向量移动蛇（速度为(0,0)时不移动）"""
+        # 若游戏未运行、速度为零或已结束，则不执行移动逻辑
         if not self.is_running or self.velocity == (0, 0) or self.game_over:
             return
 
-        # 计算新头部坐标
+        # 计算新头部坐标：基于当前头部位置和速度向量
         head_x, head_y = self.snake[0]
         new_head = (head_x + self.velocity[0], head_y + self.velocity[1])
 
-        # 碰撞检测
+        # 碰撞检测：检查新头部是否碰撞边界或自身
         if self.collision_detector.check_collision(new_head, self.snake):
-            self.game_over = True  # 游戏结束但不直接退出
+            self.game_over = True  # 标记游戏结束（但不直接退出）
             return
         
-        # 更新蛇身
+        # 更新蛇身：在头部插入新位置（实现移动效果）
         self.snake.insert(0, new_head)
 
-        # 吃食物逻辑
+        # 吃食物逻辑：
+        # 若新头部位置有食物，则移除该食物并生成新食物（蛇身增长）
+        # 若没有吃到食物，则移除尾部（保持长度不变）
         if self.food_manager.check_food_collision(new_head):
             self.food_manager.remove_food(new_head)
             self.generate_food(1)
